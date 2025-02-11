@@ -1,0 +1,22 @@
+//@version=5
+strategy("EMA Crossover Strategy", overlay=true)
+
+// Define Moving Averages
+emaShort = ta.ema(close, 10)  // Fast EMA (10-period)
+emaLong = ta.ema(close, 50)   // Slow EMA (50-period)
+
+// Define Buy and Sell Conditions
+longCondition = ta.crossover(emaShort, emaLong)  // Fast crosses above Slow
+shortCondition = ta.crossunder(emaShort, emaLong)  // Fast crosses below Slow
+
+// Plot Moving Averages
+plot(emaShort, title="Fast EMA (10)", color=color.blue)
+plot(emaLong, title="Slow EMA (50)", color=color.red)
+
+// Execute Trading Strategy
+strategy.entry("Long", strategy.long, when=longCondition)  // Enter Long position
+strategy.close("Long", when=shortCondition)  // Close Long position when Short condition occurs
+
+// Plot Buy and Sell Signals
+plotshape(longCondition, location=location.belowbar, color=color.green, style=shape.triangleup, size=size.small, title="Buy Signal")
+plotshape(shortCondition, location=location.abovebar, color=color.red, style=shape.triangledown, size=size.small, title="Sell Signal")
